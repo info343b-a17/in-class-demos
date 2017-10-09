@@ -4,3 +4,37 @@
 
 /* Add CSS styling here */
 
+.content div {
+  border: 3px solid blue;
+  margin: .5em 0;
+  padding: 0 .5em;
+}
+
+/* Flexbox */
+
+@media (min-width: 768px){
+
+  .content { /* parent! */
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .content div { /* children! */
+    flex-basis: 50%;
+  } 
+
+}
+
+
+/* Media queries! */
+@media (min-width: 992px){ /*on big screens*/
+
+  .content div {
+    flex-basis: 25%;
+  }
+
+
+}
+
+
+
