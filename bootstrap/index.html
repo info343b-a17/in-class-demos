@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Bootstrap Demo</title>
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
 </head>
-<body>
+<body class="container">
   <header>
-    <h1>Bootstrap Demo</h1>
-    <p>Building on the shoulders of giants</p>
-    <a href="http://getbootstrap.com/">Get Bootstrap</a>
+    <h1 class="bg-danger text-white">Bootstrap Demo</h1>
+    <p class="lead">Building on the shoulders of giants</p>
+    <a class="btn btn-primary" href="http://getbootstrap.com/">Get Bootstrap</a>
   </header>
 
   <main>
@@ -30,24 +33,28 @@
       </div>
     </section>
     
-    <section>
-      <div>
-        <h2>Thing A</h2>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam, est!</p>
+    <section class="row">
+      <div class="col-md-6 col-lg-4 col-xl-2"> <!-- this is the cell -->
+        <div class="card"> <!-- the cell's content -->
+          <h2>Thing A</h2>
+          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam, est!</p>
+        </div>
       </div>
-      <div>
-        <h2>Thing B</h2>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum repudiandae tempore nobis?</p>
+      <div class="col-md-6 col-lg-4 col-xl-4">
+        <div class="card">
+          <h2>Thing B</h2>
+          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum repudiandae tempore nobis?</p>
+        </div>
       </div>
-      <div>
+      <div class="col-md-6 col-lg-4">
         <h2>Thing C</h2>
         <p>Lorem ipsum dolor sit amet consectetur.</p>
       </div>
-      <div>
+      <div class="col-md-6 col-lg-4">
         <h2>Thing D</h2>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
       </div>
-      <div>
+      <div class="col-md-6 col-lg-4">
         <h2>Thing E</h2>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim, illum?</p>
       </div>
