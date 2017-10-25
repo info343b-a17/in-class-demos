@@ -8,8 +8,8 @@
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/info343-au16/lecture07-jquery/issues"
-  },
-  "homepage": "https://github.com/info343-au16/lecture07-jquery#readme"
+  "dependencies": {},
+  "devDependencies": {
+    "jquery": "^3.2.1"
+  }
 }
