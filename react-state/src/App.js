@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import 'whatwg-fetch'; //load the polyfill
+
 const SAMPLE_TASKS = [
   {id:1, description:'Learn JSX', complete:true},
   {id:2, description:'Learn about React State', complete:false},
@@ -15,7 +17,8 @@ class App extends Component {
     //initial state values
     this.state = {
       currentTime: new Date(),
-      incompleteCount: 'A lot'
+      incompleteCount: 'A lot',
+      tasks: [] //initially empty      
     };
 
     window.setInterval(() => {
@@ -26,13 +29,52 @@ class App extends Component {
     }, 1000);
   }
 
+  //lifecycle event!!
+  componentDidMount() {
+    //download the data
+    fetch('tasks.json')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data)=>{
+        this.setState({tasks:data}); //set the loaded data to be the tasks
+      });
+  }
+
+
+  //yoinked from TaskList
+  toggleFinished(taskId){
+    let updatedTasks = this.state.tasks.map((task) => {
+      if(task.id === taskId){
+        task.complete = !task.complete; //toggle
+      }
+      return task;
+    })
+
+    this.setState({tasks:updatedTasks});
+  }
+
+  addTask(description){
+    let newTask = {
+      id:this.state.tasks.length+1,
+      description: description,
+      complete: false
+    }
+
+    let updatedTasks = this.state.tasks.concat(newTask);
+    this.setState({tasks:updatedTasks});
+  }
+
   render() {
     return (
       <div className="container">
         <Clock time={this.state.currentTime} />
         <p className="lead">Things I have to do ({this.state.incompleteCount})</p>
-        <TaskList />
-        <AddTaskForm />
+        <TaskList 
+          tasks={this.state.tasks}
+          toggleCallback={(taskId) => {this.toggleFinished(taskId)}}
+          />
+        <AddTaskForm submitCallback={(descr) => {this.addTask(descr)}} />
       </div>
     );
   }
@@ -48,34 +90,23 @@ class Clock extends Component {
 
 class TaskList extends Component {  
 
-  constructor(props){
-    super(props);
+  // constructor(props){
+  //   super(props);
 
-    //initial values
-    this.state = {
-      tasks: SAMPLE_TASKS    
-    }
-  }
-
-  toggleFinished(taskId){
-    let updatedTasks = this.state.tasks.map((task) => {
-      if(task.id === taskId){
-        task.complete = !task.complete; //toggle
-      }
-      return task;
-    })
-
-    this.setState({tasks:updatedTasks});
-  }
+  //   //initial values
+  //   this.state = {
+  //     tasks: SAMPLE_TASKS    
+  //   }
+  // }
 
   render() { 
     
     //[{} {} {}] ==> [<Task> <Task> <Task>]
-    let taskItemsArray = this.state.tasks.map((task) => {
+    let taskItemsArray = this.props.tasks.map((task) => {
       return <Task 
                 key={task.id} 
                 task={task} 
-                toggleCallback={(taskId) => {this.toggleFinished(taskId)} }  
+                toggleCallback={ this.props.toggleCallback }  
                 />;
     })
 
@@ -107,14 +138,41 @@ class Task extends Component {
 }
 
 class AddTaskForm extends Component {
+  constructor(props){
+    super(props);
+
+    //initial state
+    this.state = {value: ''}
+
+  }
+
+  handleChange(event){
+    this.setState({value: event.target.value}, () => {
+      console.log(this.state.value); //do this when done setting state      
+    });
+  }
+
+  handleClick(event){
+    event.preventDefault();
+    this.props.submitCallback(this.state.value);
+    this.setState({value:''}); //reset once finished    
+  }
+
   render() {
     return (
       <form>
         <input 
           className="form-control mb-3"
           placeholder="What else do you have to do?"
+          value={this.state.value}
+          onChange={(event) => {this.handleChange(event) } }
           />
-        <button className="btn btn-primary">Add task to list</button>
+        <button 
+          className="btn btn-primary" 
+          onClick={(event) => {this.handleClick(event)}}
+          >
+            Add task to list
+        </button>
       </form>
     );
   }
