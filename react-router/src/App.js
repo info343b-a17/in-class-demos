@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+
+import { BrowserRouter, Route, Switch, Link, NavLink } from 'react-router-dom';
+
 import './App.css';
 
 const BLOG_POSTS = { //model for demoing
@@ -14,32 +17,49 @@ class App extends Component {
     let postLinks = Object.keys(BLOG_POSTS).map((date) => {
       return (
       <li key={date}>
-        <a href={'/blog/posts/'+date} className="nav-link">{date}</a>
+        <Link to={'/blog/posts/'+date} className="nav-link">{date}</Link>
       </li>
       )
     });
 
+    let renderWelcomeCallback = (routerProps) => {
+      return <WelcomePage {...routerProps} greetee="Class" />
+        // match={routerProps.match}
+        // history={routerProps.history}       
+    };
+
     return (
-      <div className="container">
-        <h1>My Blog</h1>
-        <nav>
-          <ul className="nav">
-            <li>
-              <a href='/' className="nav-link">Home</a>
-            </li>
-            <li>
-              <a href='/about' className="nav-link">About</a>
-            </li>
-            <li>
-              <a href='/blog' className="nav-link">Blog</a>
-            </li>
-            {postLinks}
-          </ul>
-        </nav>
-        <WelcomePage />
-        <AboutPage />
-        <BlogPostList />
-      </div>
+      <BrowserRouter>
+        <div className="container">
+          <h1>My Blog</h1>
+          <nav>
+            <ul className="nav">
+              <li>
+                <NavLink exact to='/' className="nav-link" activeClassName='activeLink'>Home</NavLink>
+              </li>
+              <li>
+                <NavLink to='/about' className="nav-link" activeClassName='activeLink'>About</NavLink>
+              </li>
+              <li>
+                <NavLink to='/blog' className="nav-link" activeClassName='activeLink'>Blog</NavLink>
+              </li>
+              {postLinks}
+            </ul>
+          </nav>
+
+          <Switch>
+            <Route exact path='/' render={renderWelcomeCallback} />
+            {/* <Route path='/about' component={WelcomePage} /> do this too */}
+            <Route path='/about' component={AboutPage} />
+            <Route exact path='/blog' component={BlogPostList} />
+            <Route path='/blog/posts/:postId' component={BlogPost} />
+          </Switch>
+
+          {/* <WelcomePage />
+          <AboutPage />
+          <BlogPostList /> */}
+        </div>
+      </BrowserRouter>
     );
   }
 }
@@ -48,7 +68,7 @@ class App extends Component {
 class WelcomePage extends Component {
   render() {
     return (
-      <p className="lead"><strong>Welcome</strong> to my blog, Where I post micro updates about whatever stuff is of interest to me</p>
+      <p className="lead"><em>Welcome {this.props.greetee}!</em> to my blog, Where I post micro updates about whatever stuff is of interest to me</p>
     );
   }
 }
@@ -77,7 +97,9 @@ class BlogPostList extends Component {
 class BlogPost extends Component {
   render() {
 
-    let date = this.props.date;    
+    console.log(this.props);
+
+    let date = this.props.date || this.props.match.params.postId;    
 
     return (
       <div>
