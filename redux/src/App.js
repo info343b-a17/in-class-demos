@@ -1,30 +1,29 @@
 import React, { Component } from 'react';
+// import {store, createBakeAction, createEatAction} from './store';
+import {createBakeAction, createEatAction} from './store';
+import { connect } from 'react-redux';
+
+/** Components **/
 
 class App extends Component {
   constructor(props){
     super(props) //hey dad, set up this.props
 
-    //initial state values
-    this.state = {
-      cookies: [],
-      baked: 0
-    };
+    this.state = store.getState();
+  }
+
+  componentDidMount() {
+    store.subscribe(() => {
+      this.setState(store.getState());
+    })
   }
 
   addCookie(flavor){
-    let updatedCookies = this.state.cookies.concat({
-      cookieId: this.state.baked,
-      flavor:flavor
-    });
-    this.setState({
-      cookies:updatedCookies, 
-      baked:this.state.baked+1
-    });
+    store.dispatch(createBakeAction(flavor));
   }
 
   eatCookie(cookieId) {
-    let updatedCookies = this.state.cookies.filter((c) => c.cookieId !== cookieId);
-    this.setState({cookies: updatedCookies});
+    store.dispatch(createEatAction(cookieId));
   }
 
   render() {
@@ -32,15 +31,15 @@ class App extends Component {
       <div className="container">
         <CookieButton
           flavor='ChocolateChip'
-          makeCookieCallback={(c) => this.addCookie(c)}
+          makeCookieCallback={(c) => this.props.addCookie(c)}
           />
         <CookieButton
           flavor='Rainbow'
-          makeCookieCallback={(c) => this.addCookie(c)}
+          makeCookieCallback={(c) => this.props.addCookie(c)}
           />
         <CookieSheet 
-          cookies={this.state.cookies} 
-          eatCookieCallback={(c) => this.eatCookie(c)}
+          cookies={this.props.cookies} 
+          eatCookieCallback={(c) => this.props.eatCookie(c)}
           />
       </div>
     );
@@ -79,4 +78,19 @@ class CookieSheet extends Component {
   }
 }
 
-export default App;
+//Connecting with react-redux
+function mapStateToProps(state){
+  return state;
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    addCookie: (flavor) => dispatch(createBakeAction(flavor)),
+    eatCookie: (cookieId) => dispatch(createEatAction(cookieId)),
+  }
+}
+
+const connectComponent = connect(mapStateToProps, mapDispatchToProps);
+const ConnectedApp = connectComponent(App);
+
+export default ConnectedApp;
